@@ -1,0 +1,21 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+
+.demo{
+    background-color: rgb(63, 63, 63);
+    margin: 15px;
+    border: 1px solid black;
+    color: white;
+}
+
+.classOne {
+    background-color: wheat;
+}
+
+.classTwo {
+    border: 1px solid red;
+}
+
+

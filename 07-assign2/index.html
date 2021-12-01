@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div id="app">
+        <button v-on:click="yeah">Alert Me!</button>
+
+        <input type="text" v-on:input="copying">
+        <p> {{content}} </p>
+
+        <input type="text" v-on:input="copying" v-on:keyup.enter="showEntered">
+        <p> {{contentEntered}} </p>
+    </div>
+
+
+    <script src="https://unpkg.com/vue@next"></script>
+    <script src="app.js"></script>
+</body>
+</html>

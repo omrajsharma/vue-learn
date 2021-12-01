@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="app">
+        <!-- INLINE STYLING -->
+        <div class="demo" :style="{borderColor: boxA ? 'pink' : 'red'}" @click="boxSelected('a')">number 1</div>
+        <div class="demo" :style="{borderColor: boxB ? 'pink' : 'red'}" @click="boxSelected('b')">number 2</div>
+        <div class="demo" :style="{borderColor: boxC ? 'pink' : 'red'}" @click="boxSelected('c')">number 3</div>
+        <div class="demo" @click="boxSelected('r')">Reset</div>
+
+        <!-- DYNAMIC CSS -->
+        <div :class="flag ? 'classOne classTwo' : 'classOne'">Dynamic CSS</div>
+        <div :class="{classOne: false, classTwo: true}">Dynamic CSS</div>
+        
+    </div>
+
+    <script src="https://unpkg.com/vue@next"></script>
+    <script src="app.js"></script>
+</body>
+</html>
