@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div id="app">
+        <h1 align="center">Without components</h1>
+        <div v-for="friend in friends">
+            <button @click="toggleDisplay">Toggle</button>
+            <div v-if="display">
+                <h1> {{friend.name}} </h1>
+                <p> {{friend.id}} </p>
+                <p> {{friend.phone}} </p>
+                <p> {{friend.email}} </p>
+            </div>
+        </div>
+
+        <h1 align="center">with COMPONENTS</h1>
+        <component-one></component-one>
+    </div>
+    
+    <script src="https://unpkg.com/vue@next"></script>
+    <script src="app.js"></script>
+</body>
+</html>
