@@ -5,7 +5,10 @@
       <div>
         <base-button @click="loadExperiences">Load Submitted Experiences</base-button>
       </div>
-      <ul>
+      <p v-if="isLoading">Loading...</p>
+      <p v-else-if="!isLoading && error"> {{error}} </p>
+      <p v-else-if="!isLoading && (!results || results.length === 0)">No Stored experience found. Start adding experiences.</p>
+      <ul v-else-if="!isLoading && results && results.length >0">
         <survey-result
           v-for="result in results"
           :key="result.id"
@@ -27,11 +30,16 @@ export default {
   },
   data() {
     return {
-      results: []
+      results: [],
+      isLoading: false,
+      error: null
     };
   },
   methods: {
     loadExperiences(){
+      this.isLoading = true;
+      this.error = null;
+
         // GET REQUEST
         fetch('https://vue-http-req-145d4-default-rtdb.asia-southeast1.firebasedatabase.app/surveys.json')
         .then((response) => {
@@ -39,6 +47,7 @@ export default {
             return response.json();
           }
         }).then((data) => {
+          this.isLoading = false;
           console.log(data);
           const results = [];
           for(const id in data){
@@ -49,6 +58,11 @@ export default {
             });
           }
           this.results = results;
+        })
+        .catch((error)=> {
+          this.isLoading = false;
+          console.log(error);
+          this.error = 'failed to fetch data - please try again later.'
         }) ;
       // ITS BY DEFAULT GET, NO BODY FOR GET REQUEST AND THOUGHT HEADER
 
