@@ -1,5 +1,6 @@
 <template>
   <button @click="confirmInput">Confirm</button>
+  <button @click="saveChanges">Save Changes</button>
   <ul>
     <user-item
       v-for="user in users"
@@ -18,11 +19,39 @@ export default {
     UserItem,
   },
   inject: ["users"],
+  data() {
+    return {changesSaved: false};
+  },
   methods: {
     confirmInput() {
       // Programmatic Navigation
       this.$router.push('/teams');
+    },
+    saveChanges() {
+      this.changesSaved = true;
     }
+  },
+  // NAVIGATION GUARDS
+  // BEFORE EACH
+  beforeRouteEnter(to, from, next) {
+    console.log('inside the component, before route enter');
+    console.log(to, from);
+    next();
+  },
+  // FOR UNSAVED FORMS
+  beforeRouteLeave(to,from,next){
+    console.log('before route leaving');
+    console.log(to, from);
+    if(this.changesSaved){
+      next();
+    } else {
+      const userWantsToLeave = confirm('are you sure? you got unsaved changes!');
+      next(userWantsToLeave);
+    }
+  },
+  unmounted() {
+    
+    console.log('unmounted');
   }
 };
 </script>

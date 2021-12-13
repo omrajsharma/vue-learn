@@ -70,6 +70,13 @@ export default {
   },
   created() {
     this.loadTeamMember(this.teamId);
+    console.log(this.$route.query);
+  },
+  // NAVIGATION GUARDS
+  beforeRouteUpdate(to, from, next){
+    // this.loadTeamMember(to.params.teamId);
+    console.log(to, from)
+    next();
   },
   watch: {
     teamId(newId) {
