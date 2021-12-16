@@ -1,6 +1,11 @@
 <template>
+
   <div class="container">
-    <div class="block" :class="{animate: animatedBlock}"></div>
+    <users-list></users-list>
+  </div>
+
+  <div class="container">
+    <div class="block" :class="{ animate: animatedBlock }"></div>
     <button @click="animateBlock">Animate</button>
   </div>
 
@@ -8,35 +13,126 @@
     <!-- transitions only container one direct child -->
     <!-- <transition enter-to-class="some-class"> -->
     <!-- .v -> .para using name -->
-    <transition name="para">
-      <p v-if="paraIsVisible">this is only sometimes visible... </p>
+    <!-- @hooks are used to make animations -->
+    <!-- :css='false' says not to search for css and better optimise -->
+    <transition
+      :css="false"
+      @before-enter="beforeEnter"
+      @enter="enter"
+      @after-enter="afterEnter"
+      @before-leave="beforeLeave"
+      @leave="leave"
+      @after-leave="afterLeave"
+      @enter-cancelled="enterCancelled"
+      @leave-canvelled="leaveCancelled"
+    >
+      <p v-if="paraIsVisible">this is only sometimes visible...</p>
     </transition>
-      <button @click="toggleParagraph">Toggle Paragraphs</button>
+    <button @click="toggleParagraph">Toggle Paragraphs</button>
   </div>
-  
-  <!-- <transition name="modal"> -->
-    <base-modal @close="hideDialog" :open="dialogIsVisible">
-      <p>This is a test dialog!</p>
-      <button @click="hideDialog">Close it!</button>
-    </base-modal>
-  <!-- </transition> -->
 
+  <!-- having two component under tran but technically its one button -->
+  <div class="container">
+    <transition name="fade-button" mode="out-in">
+      <button @click="showUsers" v-if="!usersAreVisible">Show users</button>
+      <button @click="hideUsers" v-else>Hide Users</button>
+    </transition>
+  </div>
+
+  <!-- <transition name="modal"> -->
+  <base-modal @close="hideDialog" :open="dialogIsVisible">
+    <p>This is a test dialog!</p>
+    <button @click="hideDialog">Close it!</button>
+  </base-modal>
+  <!-- </transition> -->
 
   <div class="container">
     <button @click="showDialog">Show Dialog</button>
   </div>
-</template>  
+</template>
 
 <script>
+
+import UsersList from './components/UsersList.vue';
+
 export default {
+  components: {
+    UsersList
+  },
   data() {
-    return { 
+    return {
       animatedBlock: false,
       dialogIsVisible: false,
-      paraIsVisible: false
+      paraIsVisible: false,
+      usersAreVisible: false,
+      enterInterval: null,
+      leaveInterval: null
     };
   },
   methods: {
+    // programmatically adding css
+    enterCancelled(el){
+      console.log(el);
+      clearInterval(this.enterInterval);
+    }, 
+    leaveCancelled(el) {
+      console.log(el);
+      clearInterval(this.leaveInterval);
+    },
+    beforeEnter(el) {
+      console.log("before the enter ()");
+      console.log(el);
+      el.style.opacity = 0;
+    },
+    enter(el, done) {
+      console.log("enter");
+      console.log(el);
+      let round = 1;
+      this.enterInterval = setInterval(() => {
+        el.style.opacity = round * 0.01 ;
+        round++;
+        if(round > 100){
+          clearInterval(this.enterInterval);
+          // after done of the function
+          done();
+        }
+      }, 20);
+    },
+    afterEnter(el) {
+      setTimeout(() => {
+        console.log("after enter");
+        console.log(el);
+      }, 2000);
+    },
+    beforeLeave(el) {
+      console.log("before the leaving ()");
+      console.log(el);
+      el.style.opacity = 1;
+    },
+    leave(el, done) {
+      console.log('leave')
+      console.log(el)
+      let round = 1;
+      this.leaveInterval = setInterval(() => {
+        el.style.opacity = 1- round * 0.01 ;
+        round++;
+        if(round > 100){
+          clearInterval(this.leaveInterval);
+          // after done of the function
+          done();
+        }
+      }, 20);
+    },
+    afterLeave(el) {
+      console.log('afterleave')
+      console.log(el);
+    },
+    showUsers() {
+      this.usersAreVisible = true;
+    },
+    hideUsers() {
+      this.usersAreVisible = false;
+    },
     showDialog() {
       this.dialogIsVisible = true;
     },
@@ -49,7 +145,7 @@ export default {
     // ANIMATIONS
     animateBlock() {
       this.animatedBlock = true;
-    }
+    },
   },
 };
 </script>
@@ -105,32 +201,31 @@ button:active {
 
 /* Vue added classes with transition tag */
 /* .v-enter-active */
-.para-enter-from {
-  /* opacity: 0;
-  transform: translateY(-30); */
-}
-.para-enter-active {
-  /* transition: all 0.3s ease-out; */
+/* .para-enter-from {
+  opacity: 0;
+  transform: translateY(-30);
+} */
+/* .para-enter-active {
+  transition: all 0.3s ease-out;
   animation: slide-fade 0.3s ease-out;
-}
-.para-enter-to {
-  /* opacity: 1;
-  transform: translateY(0); */
-}
+} */
+/* .para-enter-to {
+  opacity: 1;
+  transform: translateY(0);
+} */
 
-.para-leave-from {
-  /* opacity: 1;
-  transform: translateY(0); */
-}
-.para-leave-active{
-  /* transition: all 0.3s ease-in; */
+/* .para-leave-from {
+  opacity: 1;
+  transform: translateY(0);
+} */
+/* .para-leave-active {
+  transition: all 0.3s ease-in;
   animation: slide-fade 0.3s ease-out;
-}
-.para-leave-to {
-  /* opacity: 0;
-  transform: translateY(30px); */
-}
-
+} */
+/* .para-leave-to {
+  opacity: 0;
+  transform: translateY(30px);
+} */
 
 /* for modal */
 /* .modal-enter-from {
@@ -143,6 +238,19 @@ button:active {
 
 } */
 
+.fade-button-enter-from,
+.fade-button-leave-to {
+  opacity: 0;
+}
+.fade-button-enter-active,
+.fade-button-leave-active {
+  transition: opacity 0.5s ease-out;
+}
+.fade-button-enter-to,
+.fade-button-leave-from {
+  opacity: 1;
+}
+
 /* Modal Animation */
 @keyframes modal {
   from {
@@ -150,7 +258,7 @@ button:active {
     transform: translateY(0) scale(0.9);
   }
 
-  to{
+  to {
     opacity: 1;
     transform: translateY(0) scale(1);
   }
@@ -169,6 +277,4 @@ button:active {
     transform: translateX(-150) scale(1);
   }
 }
-
-
 </style>

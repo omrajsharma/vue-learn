@@ -1,5 +1,6 @@
 <template>
     <div v-if="open" class="backdrop" @click="$emit('close')"></div>
+    <!-- transition class must have direct class for animation -->
     <transition name="modal">
       <dialog open v-if="open">
         <slot></slot>
