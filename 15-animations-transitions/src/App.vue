@@ -1,63 +1,25 @@
 <template>
 
-  <div class="container">
-    <users-list></users-list>
-  </div>
+<!-- this is unsopported in vue 3 -->
+  <!-- <transition name="route">
+    <router-view ></router-view>
+  </transition> -->
 
-  <div class="container">
-    <div class="block" :class="{ animate: animatedBlock }"></div>
-    <button @click="animateBlock">Animate</button>
-  </div>
-
-  <div class="container">
-    <!-- transitions only container one direct child -->
-    <!-- <transition enter-to-class="some-class"> -->
-    <!-- .v -> .para using name -->
-    <!-- @hooks are used to make animations -->
-    <!-- :css='false' says not to search for css and better optimise -->
-    <transition
-      :css="false"
-      @before-enter="beforeEnter"
-      @enter="enter"
-      @after-enter="afterEnter"
-      @before-leave="beforeLeave"
-      @leave="leave"
-      @after-leave="afterLeave"
-      @enter-cancelled="enterCancelled"
-      @leave-canvelled="leaveCancelled"
-    >
-      <p v-if="paraIsVisible">this is only sometimes visible...</p>
+<!-- page transition -->
+  <router-view v-slot="slotProps" mode="in-out">
+    <transition name="fade-button">
+      <component :is="slotProps.Component"></component>
     </transition>
-    <button @click="toggleParagraph">Toggle Paragraphs</button>
-  </div>
+  </router-view>
 
-  <!-- having two component under tran but technically its one button -->
-  <div class="container">
-    <transition name="fade-button" mode="out-in">
-      <button @click="showUsers" v-if="!usersAreVisible">Show users</button>
-      <button @click="hideUsers" v-else>Hide Users</button>
-    </transition>
-  </div>
-
-  <!-- <transition name="modal"> -->
-  <base-modal @close="hideDialog" :open="dialogIsVisible">
-    <p>This is a test dialog!</p>
-    <button @click="hideDialog">Close it!</button>
-  </base-modal>
-  <!-- </transition> -->
-
-  <div class="container">
-    <button @click="showDialog">Show Dialog</button>
-  </div>
 </template>
 
 <script>
-
-import UsersList from './components/UsersList.vue';
+// import UsersList from './components/UsersList.vue';
 
 export default {
   components: {
-    UsersList
+    // UsersList
   },
   data() {
     return {
@@ -199,6 +161,14 @@ button:active {
   animation: slide-fade 0.3s ease-out forwards;
 }
 
+.route-enter-active {
+  animation: slide-scale 0.8s ease-out;
+}
+
+.route-leave-active {
+  animation: slide-scale 0.8s ease-in;
+}
+
 /* Vue added classes with transition tag */
 /* .v-enter-active */
 /* .para-enter-from {
@@ -237,6 +207,9 @@ button:active {
 .modal-enter-to{
 
 } */
+
+
+
 
 .fade-button-enter-from,
 .fade-button-leave-to {
